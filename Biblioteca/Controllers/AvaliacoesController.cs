@@ -47,11 +47,31 @@ namespace Biblioteca.Controllers
         }
 
         // GET: Avaliacoes/Create
-        public IActionResult Create()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(int LivroId, int Nota, string? Comentario)
         {
-            ViewData["LivroId"] = new SelectList(_context.Livros, "LivroId", "LivroId");
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId");
-            return View();
+            var userName = User.Identity?.Name;
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.IdentityUser != null && u.IdentityUser.UserName == userName);
+
+            if (usuario == null || Nota < 1 || Nota > 5)
+                return Unauthorized();
+
+            var avaliacao = new Avaliacao
+            {
+                LivroId = LivroId,
+                UsuarioId = usuario.UsuarioId,
+                Nota = Nota,
+                Comentario = Comentario,
+                DataAvaliacao = DateTime.Now
+            };
+
+            _context.Avaliacoes.Add(avaliacao);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Avaliação registrada com sucesso!";
+            return RedirectToAction("Index", "Reservas");
         }
 
         // POST: Avaliacoes/Create
