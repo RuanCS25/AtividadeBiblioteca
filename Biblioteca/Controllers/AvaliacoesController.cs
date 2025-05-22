@@ -47,6 +47,11 @@ namespace Biblioteca.Controllers
         }
 
         // GET: Avaliacoes/Create
+
+
+        // POST: Avaliacoes/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int LivroId, int Nota, string? Comentario)
@@ -74,23 +79,6 @@ namespace Biblioteca.Controllers
             return RedirectToAction("Index", "Reservas");
         }
 
-        // POST: Avaliacoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AvaliacaoId,Nota,Comentario,DataAvaliacao,LivroId,UsuarioId")] Avaliacao avaliacao)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(avaliacao);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["LivroId"] = new SelectList(_context.Livros, "LivroId", "LivroId", avaliacao.LivroId);
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuarioId);
-            return View(avaliacao);
-        }
 
         // GET: Avaliacoes/Edit/5
         public async Task<IActionResult> Edit(int? id)

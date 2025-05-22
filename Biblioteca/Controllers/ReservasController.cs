@@ -22,6 +22,21 @@ namespace Biblioteca.Controllers
         {
             _context = context;
         }
+        public async Task<IActionResult> MarcarReservado(int id)
+        {
+            var reserva = await _context.Reservas.FindAsync(id);
+            if (reserva == null)
+                return NotFound();
+
+            if (!reserva.LivroRetirado && !reserva.Cancelada)
+            {
+                reserva.LivroRetirado = true;
+                _context.Update(reserva);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: Reservas
         [Authorize]
