@@ -1,0 +1,59 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Entrar";
+}
+
+<div class="container d-flex justify-content-center">
+    <section id="divLogin" class="text-light bg-black">
+        <h3 class="text-center pt-1 pb-3">Bem Vindo ao Bibliotech</h3>
+        <form id="account" method="post">
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p class="fw-bold">@error.ErrorMessage</p>
+                    }
+                    <button type="button" class="btn-close " data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email" class="form-label text-black">E-mail</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password" class="form-label text-black">Senha</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="checkbox mb-3">
+                <div class="checkbox mb-3 d-flex align-items-center">
+                    <label asp-for="Input.RememberMe" class="form-label d-flex align-items-center gap-2 text-light">
+                        <input class="form-check-input custom-checkbox" asp-for="Input.RememberMe" />
+                        Lembrar de Mim?
+                    </label>
+                </div>
+            </div>
+            <div>
+                <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-light">Entrar</button>
+            </div>
+            <div class="d-flex justify-content-between text-light mt-3">
+                <p>
+                    <a class="nav-link text-light" id="forgot-password" asp-page="./ForgotPassword">Esqueceu a Senha?</a>
+                </p>
+                <p>
+                    <a class="nav-link text-light" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Novo Usuário</a>
+                </p>
+            </div>
+        </form>
+    </section>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Biblioteca.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Index";
+    var rolesPorUsuario = ViewBag.RolesPorUsuario as Dictionary<int, string>;
+}
+
+<div class="row">
+    <div class="col-1 col-md-2 col-lg-2"></div>
+    <div id="divMovimentos" class="col-10 col-md-8 col-lg-8 bg-black text-light m-lg-5 mb-3 p-5">
+
+        <h1 class="text-center mb-5">Cadastro de Usuários</h1>
+
+        <div id="divLocalizarUsuario" class="mb-4">
+            <form asp-action="Buscar" method="get" class="mb-3">
+                <div class="input-group">
+                    <input type="text" name="searchTerm" class="form-control" placeholder="Localizar usuário..." />
+                    <button type="submit" class="btn btn-outline-light">
+                        <i class="bi bi-search"></i> Localizar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <table class="table table-dark table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.NomeCompleto)</th>
+                    <th>@Html.DisplayNameFor(model => model.Celular)</th>
+                    <th>@Html.DisplayNameFor(model => model.UrlFoto)</th>
+                    <th>Role</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.NomeCompleto)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Celular)</td>
+                        <td>@Html.DisplayFor(modelItem => item.UrlFoto)</td>
+                        <td>
+                            @(rolesPorUsuario != null && rolesPorUsuario.ContainsKey(item.UsuarioId)
+                                                    ? rolesPorUsuario[item.UsuarioId]
+                                                    : "Nenhuma")
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.UsuarioId" class="text-light text-decoration-none me-2"><i class="bi bi-pencil-square"></i></a>
+                        <a asp-action="Delete" asp-route-id="@item.UsuarioId" class="text-light text-decoration-none me-2"><i class="bi bi-trash3"></i></a>
+                    </td>
+                    <td>
+                        @if (rolesPorUsuario != null && rolesPorUsuario.ContainsKey(item.UsuarioId) && rolesPorUsuario[item.UsuarioId] == "Admin")
+                            {
+                                <form asp-action="RemoverAdmin" asp-route-id="@item.UsuarioId" method="post" style="display:inline">
+                                    <button type="submit" class="btn btn-danger text-decoration-none btn-admin">Remover Admin</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="PromoverParaAdmin" asp-route-id="@item.UsuarioId" method="post" style="display:inline">
+                                    <button type="submit" class="btn btn-outline-light text-decoration-none btn-admin">Tornar Admin</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-1 col-md-2 col-lg-2"></div>
+</div>

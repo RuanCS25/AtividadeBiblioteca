@@ -1,0 +1,26 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap@5.3.3",
+      "destination": "wwwroot/lib/bootstrap/dist/"
+    },
+    {
+      "library": "bootstrap-icons@1.11.3",
+      "destination": "wwwroot/lib/bootstrap-icons/"
+    }
+  ,
+{
+  "provider": "cdnjs",
+  "library": "bootstrap@5.3.3",
+  "destination": "wwwroot/lib/bootstrap/dist/"
+}
+,
+{
+  "provider": "cdnjs",
+  "library": "jquery.mask@1.14.16",
+  "destination": "wwwroot/lib/jquery.mask/"
+}
+]
+}

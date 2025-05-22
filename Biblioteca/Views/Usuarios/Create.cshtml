@@ -1,0 +1,132 @@
+﻿@model Biblioteca.Models.Usuario
+
+@{
+    ViewData["Title"] = "Cadastro de Usuário";
+}
+
+<div id="divUsuario" class="container bg-black text-light mt-5 fs-5">
+    <h4 class="text-center fs-3">Complete Seu Cadastro</h4>
+    <hr />
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row gap-3 mb-3 mt-2">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="NomeCompleto" class="control-label"></label>
+                    <input asp-for="NomeCompleto" class="form-control" />
+                    <span asp-validation-for="NomeCompleto" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row gap-3 mb-3">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="CPF" class="control-label"></label>
+                    <input asp-for="CPF" class="form-control" />
+                    <span asp-validation-for="CPF" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="Celular" class="control-label"></label>
+                    <input asp-for="Celular" class="form-control" />
+                    <span asp-validation-for="Celular" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row gap-3 mb-3">
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="DataNascimento" class="control-label"></label>
+                    <input type="date" asp-for="DataNascimento" class="form-control" />
+                    <span asp-validation-for="DataNascimento" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group">
+                    <label asp-for="UrlFoto" class="control-label"></label>
+                    <input type="file" asp-for="UrlFoto" class="form-control" accept="image/*" />
+                    <span asp-validation-for="UrlFoto" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="hidden" asp-for="AppUserId" class="form-control" />
+        </div>
+
+        <div class="row gap-3 mb-3">
+            <div class="col">
+                <div class="form-group d-flex justify-content-between pt-4">
+                    <button asp-action="Index" class="btn btn-outline-light fs-5"><i class="bi bi-arrow-clockwise"></i> Voltar</button>
+                    <button type="submit" id="btnSalvar" class="btn btn-light fs-5">
+                        <i class="bi bi-floppy"></i>  Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        let allowLeave = false;
+
+        // Libera saída apenas se clicar no botão "Salvar"
+        document.getElementById("btnSalvar")?.addEventListener("click", function () {
+            allowLeave = true;
+        });
+
+        // Intercepta qualquer tentativa de saída (reload, fechar aba, navegar etc.)
+        window.addEventListener("beforeunload", function (e) {
+            if (!allowLeave) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // Intercepta cliques em links e botões que mudam a página
+        document.addEventListener("click", function (e) {
+            if (!allowLeave) {
+                let target = e.target;
+
+                // Sobe até o <a> ou <button> se for filho
+                while (target && !target.href && target.tagName !== 'BUTTON') {
+                    target = target.parentElement;
+                }
+
+                if (target && (target.tagName === 'A' || target.tagName === 'BUTTON')) {
+                    if (!target.closest('#btnSalvar')) {
+                        e.preventDefault();
+                        alert("Por favor, Complete o Cadastro antes de sair desta página.");
+                    }
+                }
+            }
+        });
+
+        // Intercepta mudança de rota no botão 'Voltar' do navegador
+        window.addEventListener("popstate", function (e) {
+            if (!allowLeave) {
+                history.pushState(null, '', location.href); // volta a URL para onde estava
+                alert("Por favor, Complete o Cadastro antes de sair desta página.");
+            }
+        });
+
+        // Hack: bloqueia o botão voltar mantendo o histórico sempre com a mesma entrada
+        window.onload = function () {
+            history.pushState(null, '', location.href);
+        };
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Aplica a máscara ao campo CPF
+            $('input[name="CPF"]').mask('000.000.000-00');
+            // Aplica a máscara ao campo Celular
+            $('input[name="Celular"]').mask('(00) 00000-0000');
+        });
+    </script>
+}

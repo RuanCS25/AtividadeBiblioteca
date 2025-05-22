@@ -1,0 +1,229 @@
+html {
+    font-size: 12px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.parallax {
+    background-image: url('../img/biblioteca.jpeg');
+    height: 550px;
+    max-height: 550px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+header {
+    box-shadow: rgba(0,0,0,.3) 0px 5px;
+}
+
+#divPesquisa {
+}
+
+.form-busca {
+    margin: 0 auto;
+    text-align: center;
+    width: 60%;
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+    .form-busca input {
+        padding: 5px 20px;
+        font-size: 14px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+
+#divLancamentos, #divTop5, #divAvalicao {
+    max-height: 520px;
+    height: 520px;
+}
+
+    #divLancamentos .card, #divTop5 .card, #divAvalicao .card {
+        margin: 0 32px 0 32px;
+        width: 18rem;
+        text-align: center;
+        box-shadow: rgba(0,0,0,.4) 10px 10px;
+        height: 400px;
+        max-height: 400px;
+    }
+
+        #divLancamentos .card img, #divTop5 .card img, #divAvalicao .card img {
+            height: 200px;
+            width: 150px;
+        }
+
+
+.text-shadow-white {
+    text-shadow: 2px 2px 2px white;
+}
+
+#divLogin {
+    margin: auto auto;
+    width: 40%;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 32px;
+    border-radius: 16px;
+    margin-top: 50px;
+    box-shadow: rgba(0,0,0,.4) 12px 12px;
+}
+
+    #divLogin input {
+        padding: 40px 20px 20px;
+    }
+
+        #divLogin input:last-child {
+            padding: 12px 12px;
+        }
+
+.custom-checkbox {
+    width: 12px;
+    height: 12px;
+}
+
+.checkbox .form-label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaço entre o checkbox e o texto */
+}
+
+.custom-checkbox:checked {
+    background-color: #343a40; /* Cor dark do Bootstrap */
+    border-color: #343a40; /* Cor dark do Bootstrap */
+}
+
+#divUsuario {
+    width: 60%;
+    margin: auto auto;
+    font-size: 16px;
+    padding: 32px;
+    border-radius: 16px;
+    margin-top: 50px;
+    box-shadow: rgba(0,0,0,.4) 12px 12px;
+}
+
+    #divUsuario button {
+        width: 250px;
+        padding: 16px;
+    }
+
+    #divUsuario input {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+
+#divLivro {
+    font-size: 16px;
+    border-radius: 16px;
+    margin-top: 42px;
+    box-shadow: rgba(0,0,0,.4) 12px 12px;
+}
+
+    #divLivro button {
+        width: 250px;
+        padding: 16px;
+    }
+
+    #divLivro input {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    #divLivro select {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    #divLivro textarea {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    #divLivro a {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+
+#listaLivros {
+    font-size: 16px;
+    border-radius: 16px;
+    margin-top: 42px;
+    box-shadow: rgba(0,0,0,.4) 12px 12px;
+}
+
+    #listaLivros input {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    #listaLivros a {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+.nav-tabs .nav-link:not(.active) {
+    color: #f8f9fa !important;
+}
+
+#divMovimentos {
+    font-size: 16px;
+    border-radius: 16px;
+    margin-top: 42px;
+    box-shadow: rgba(0,0,0,.4) 12px 12px;
+}
+
+    #divMovimentos button {
+        width: 250px;
+        padding: 16px;
+    }
+
+    #divMovimentos input {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+.btn-admin {
+    width: 150px !important;
+    padding: 5px !important;
+}
+
+
+#divMinhasRetiradas {
+    font-size: 14px;
+    border-radius: 16px;
+    margin-top: 42px;
+    box-shadow: rgba(0,0,0,.4) 12px 12px;
+}
+
+    #divMinhasRetiradas button {
+        width: 250px;
+        padding: 16px;
+    }
+
+    #divMinhasRetiradas input {
+        font-size: 14px;
+        padding: 12px;
+    }

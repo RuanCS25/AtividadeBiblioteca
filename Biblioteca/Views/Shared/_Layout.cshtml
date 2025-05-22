@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+@{
+    var isAdmin = User.Identity.IsAuthenticated && User.IsInRole("Admin");
+}
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Biblioteca</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Biblioteca.styles.css" asp-append-version="true" />
+</head>
+<body class="bg-dark">
+    <header class="bg-black text-light m-0 p-0">
+        <div class="container-fluid p-3">
+            <div class="d-flex justify-content-start align-items-center">
+                <div class="w-25">
+                    <button class="btn btn-outline-light fs-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#menu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+                <div class="w-50 text-center">
+                    <h1 class="text-center"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-light"><i class="bi bi-book"></i> BiblioTech </a></h1>
+                    <h2 class="text-center">Sistema de Gerenciamento de Livros</h2>
+                </div>
+                <div class="w-25 d-flex justify-content-end fs-4">
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <div class="offcanvas offcanvas-start bg-dark text-light" id="menu">
+        <div class="offcanvas-header d-flex align-items-center">
+            <h1 class="offcanvas-title fs-3 pt-2 ps-3">
+                <i class="bi bi-book"></i> BiblioTech
+            </h1>
+            <button type="button" class="btn-close text-bg-light" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <hr />
+        <div class="offcanvas-body d-flex flex-column">
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link text-light fs-5 py-3">
+                        <i class="bi bi-house"></i> Página Inicial
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a asp-controller="Reservas" asp-action="Index" class="nav-link text-light fs-5 py-3">
+                        <i class="bi bi-journal-check"></i> Minhas Reservas
+                    </a>
+                </li>
+                @if (isAdmin)
+                {
+
+                    <li class="nav-item">
+                        <a asp-controller="Livros" asp-action="Index" class="nav-link text-light fs-5 py-3">
+                            <i class="bi bi-journal-album"></i> Cadastro de Livros
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a asp-controller="Generos" asp-action="Index" class="nav-link text-light fs-5 py-3">
+                            <i class="bi bi-journal-medical"></i> Gêneros Literários
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a asp-controller="Movimentacoes" asp-action="Retiradas" class="nav-link text-light fs-5 py-3">
+                            <i class="bi bi-journal-check"></i> Movimentação de Livros
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a asp-controller="Usuarios" asp-action="Index" class="nav-link text-light fs-5 py-3">
+                            <i class="bi bi-person-check"></i> Cadastro de Usuários
+                        </a>
+                    </li>
+                }
+            </ul>
+            <hr />
+            <div class="d-flex justify-content-start fs-5">
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </div>
+
+    <div class="">
+        <main role="main" class="">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery.mask/jquery.mask.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

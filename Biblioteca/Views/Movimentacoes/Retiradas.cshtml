@@ -1,0 +1,164 @@
+﻿@model IEnumerable<Biblioteca.Models.Reserva>
+@{
+    ViewData["Title"] = "Retiradas de Livros";
+    var tabAtiva = ViewBag.TabAtiva as string ?? "retirada";
+}
+
+<div class="row">
+    <div class="col-1 col-md-2 col-lg-2">
+    </div>
+
+    <div id="divMovimentos" class="col-10 col-md-8 col-lg-8 bg-black text-light m-lg-5 mb-3 p-5">
+        <!-- Menu de Abas Bootstrap 5.3 -->
+        <ul class="nav nav-tabs text-light mb-4 fs-4" id="retiradaDevolucaoTabs" role="tablist" style="width:100%;">
+            <li class="nav-item w-50" role="presentation">
+                <button class="nav-link w-100 text-center @(tabAtiva == "retirada" ? "active" : "")" id="retiradas-tab" data-bs-toggle="tab" data-bs-target="#divRetirada" type="button" role="tab" aria-controls="divRetirada" aria-selected="@(tabAtiva == "retirada" ? "true" : "false")">
+                    Retirar
+                </button>
+            </li>
+            <li class="nav-item w-50" role="presentation">
+                <button class="nav-link w-100 text-center @(tabAtiva == "devolucao" ? "active" : "")" id="devolucao-tab" data-bs-toggle="tab" data-bs-target="#divDevolucao" type="button" role="tab" aria-controls="divDevolucao" aria-selected="@(tabAtiva == "devolucao" ? "true" : "false")">
+                    Devolver
+                </button>
+            </li>
+        </ul>
+
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show text-center" role="alert" id="alertSuccess">
+                @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+            </div>
+            <script>
+                setTimeout(function () {
+                    var alert = document.getElementById('alertSuccess');
+                    if (alert) {
+                        var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                        bsAlert.close();
+                    }
+                }, 4000);
+            </script>
+        }
+
+        <div class="tab-content">
+            <div class="tab-pane fade @(tabAtiva == "retirada" ? "show active" : "")" id="divRetirada" role="tabpanel" aria-labelledby="retiradas-tab">
+
+
+                <h1 class="text-center mb-5">Retiradas de Livros</h1>
+
+                <div id="divLocalizarReserva m-5 px-3">
+                    <!-- Campo de Busca -->
+                    <form asp-action="BuscaRetirada" method="get" class="mb-3">
+                        <input type="hidden" name="tab" value="devolucao" />
+                        <div class="input-group">
+                            <input type="text" name="searchTerm" class="form-control" placeholder="Localizar Retirada.." />
+                            <button type="submit" class="btn btn-outline-light"><i class="bi bi-search"></i> Localizar</button>
+                        </div>
+                    </form>
+                </div>
+                <table class="table table-dark table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Data Reserva</th>
+                            <th>Aluno</th>
+                            <th>Livro</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var reservasAtivas = Model as IEnumerable<Biblioteca.Models.Reserva>;
+                            if (reservasAtivas != null && reservasAtivas.Any())
+                            {
+                                foreach (var item in reservasAtivas)
+                                {
+                                    <tr>
+                                        <td>@item.DataReserva.ToString("dd/MM/yyyy")</td>
+                                        <td>@item.Usuario?.NomeCompleto</td>
+                                        <td>@item.Livro?.Titulo</td>
+                                        <td>
+                                            <a asp-controller="Movimentacoes" asp-action="Retirar" asp-route-id="@item.ReservaId" class="btn btn-light text-decoration-none">
+                                                Retirar
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a asp-controller="Reservas" asp-action="Cancelar" asp-route-id="@item.ReservaId" class="btn btn-light text-decoration-none">
+                                                Cancelar
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center">Nenhuma reserva encontrada.</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="tab-pane fade @(tabAtiva == "devolucao" ? "show active" : "")" id="divDevolucao" role="tabpanel" aria-labelledby="devolucao-tab">
+
+                <h1 class="text-center mb-5">Devoluções de Livros</h1>
+                <div id="divLocalizarDevolucao m-5 px-3">
+                    <!-- Campo de Busca -->
+                    <form asp-action="BuscaRetirada" method="get" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" name="searchTerm" class="form-control" placeholder="Localizar Retirada.." />
+                            <button type="submit" class="btn btn-outline-light"><i class="bi bi-search"></i> Localizar</button>
+                        </div>
+                    </form>
+                </div>
+                <table class="table table-dark table-striped mt-3">
+                    <thead>
+                        <tr>
+                            <th>Data Retirada</th>
+                            <th>Aluno</th>
+                            <th>Livro</th>
+                            <th>Data Prevista Devolução</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var pendentes = ViewBag.MovimentacoesPendentes as IEnumerable<Biblioteca.Models.Movimentacao>;
+                            if (pendentes != null)
+                            {
+                                foreach (var mov in pendentes)
+                                {
+                                    <tr>
+                                        <td>@mov.DataRetirada.ToString("dd/MM/yyyy")</td>
+                                        <td>@mov.Usuario?.NomeCompleto</td>
+                                        <td>@mov.Livro?.Titulo</td>
+                                        <td>@mov.DataDevolucao?.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <a asp-controller="Movimentacoes" asp-action="Devolver" asp-route-id="@mov.MovimentacaoId" class="btn btn-light text-decoration-none">
+                                                Devolver
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center">Nenhuma movimentação pendente encontrada.</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-1 col-md-2 col-lg-2">
+</div>
+

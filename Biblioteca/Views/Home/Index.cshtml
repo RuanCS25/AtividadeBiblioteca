@@ -1,0 +1,151 @@
+﻿@model IEnumerable<Biblioteca.Models.Livro>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="divPesquisa" class="bg-black pt-4 pb-4 text-light">
+    <p class="fs-4 text-center">Encontre seu livro, pelo nome, autor ou editora.</p>
+    <form asp-controller="Livros" asp-action="Search" method="get" class="input-group form-busca">
+        <input type="text" name="searchTerm" class="form-control fs-4" placeholder="Pesquisar na BiblioTech" aria-describedby="btnPesquisar" />
+        <button class="btn btn-outline-light fs-4" type="submit" id="btnPesquisar">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
+</div>
+
+<div id="divLancamentos">
+    <div class="parallax pt-4 d-flex justify-content-evenly flex-wrap">
+        @foreach (var livro in Model)
+        {
+            <div class="card text-center mt-2 mb-3" style="width: 16rem;">
+                <div class="w-100 text-center mt-3">
+                    <img src="@(string.IsNullOrEmpty(livro.UrlCapa) ? Url.Content("~/img/sem-imagem.jpg") : Url.Action("BuscarCapa", "Livros", new { id = livro.LivroId }))"
+                         class="card-img-top img-fluid"
+                         alt="Capa do Livro" style="height: 200px; object-fit: cover;" />
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">@livro.Titulo</h4>
+                    <h5 class="lead">@livro.Autor</h5>
+                    <p class="mb-1"><span class="badge bg-secondary">@livro.Genero?.Nome</span></p>
+                    <p class="text-center">
+                        <form asp-controller="Reservas" asp-action="Create" method="post" class="d-inline">
+                            <input type="hidden" name="LivroId" value="@livro.LivroId" />
+                            <button type="submit" class="btn btn-dark p-3 m-0">
+                                Reservar
+                            </button>
+                        </form>
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+
+<div class="m-0 p-0">
+    <h2 class="text-center text-light bg-dark m-0 pt-4">TOP 5 - Livros Mais Reservados</h2>
+    <div id="divTop5" class="bg-dark m-0 pt-4 d-flex justify-content-evenly flex-wrap">
+        @if (ViewBag.LivrosMaisReservados != null)
+        {
+            foreach (var livro in (IEnumerable<Biblioteca.Models.Livro>)ViewBag.LivrosMaisReservados)
+            {
+                <div class="card text-center mt-2 mb-3" style="width: 16rem;">
+                    <div class="w-100 text-center mt-3">
+                        <img src="@(string.IsNullOrEmpty(livro.UrlCapa) ? Url.Content("~/img/sem-imagem.jpg") : Url.Action("BuscarCapa", "Livros", new { id = livro.LivroId }))"
+                             class="card-img-top img-fluid"
+                             alt="Capa do Livro" style="height: 200px; object-fit: cover;" />
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">@livro.Titulo</h4>
+                        <h5 class="lead">@livro.Autor</h5>
+                        <p class="mb-1"><span class="badge bg-secondary">@livro.Genero?.Nome</span></p>
+                        <p class="text-center">
+                            <form asp-controller="Reservas" asp-action="Create" method="post" class="d-inline">
+                                <input type="hidden" name="LivroId" value="@livro.LivroId" />
+                                <button type="submit" class="btn btn-dark p-3 m-0">
+                                    Reservar
+                                </button>
+                            </form>
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <span class="text-light">Nenhum livro reservado ainda.</span>
+        }
+    </div>
+</div>
+
+<!--
+<div id="divAvalicao">
+
+    <div class="parallax pt-4 pb-5 ">
+        <h2 class="text-center text-black bg-transparent m-0 pt-2 text-shadow-white">Livros com Melhores Avaliações</h2>
+
+        <div class="pt-3 d-flex justify-content-evenly">
+            <div class="card text-center mt-2">
+                <div class="w-100 text-center mt-3">
+                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">A Fazenda SFantasma</h4>
+                    <h5 class="lead">Gustavo F. Francelin</h5>
+                    <p>Avaliações</p>
+                    <p class="text-center">
+                        <a href="#" class="card-link btn btn-dark">Reservar</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card text-center mt-2">
+                <div class="w-100 text-center mt-3">
+                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">A Fazenda SFantasma</h4>
+                    <h5 class="lead">Gustavo F. Francelin</h5>
+                    <p>Avaliações</p>
+                    <p class="text-center">
+                        <a href="#" class="card-link btn btn-dark">Reservar</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card text-center mt-2">
+                <div class="w-100 text-center mt-3">
+                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">A Fazenda SFantasma</h4>
+                    <h5 class="lead">Gustavo F. Francelin</h5>
+                    <p>Avaliações</p>
+                    <p class="text-center">
+                        <a href="#" class="card-link btn btn-dark">Reservar</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card text-center mt-2">
+                <div class="w-100 text-center mt-3">
+                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">A Fazenda SFantasma</h4>
+                    <h5 class="lead">Gustavo F. Francelin</h5>
+                    <p>Avaliações</p>
+                    <p class="text-center">
+                        <a href="#" class="card-link btn btn-dark">Reservar</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->
+
+<div id="divFooter" class="bg-dark text-center p-3">
+    <p class="lead text-light pt-3">Desenvolvido com 🤍 por Prof. Cristiano de Paula</p>
+</div>

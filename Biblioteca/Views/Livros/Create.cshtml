@@ -1,0 +1,224 @@
+﻿@model Biblioteca.Models.Livro
+
+@{
+    ViewData["Title"] = "Cadastro de Livros";
+}
+
+<div class="row">
+    <div class="col-1 col-md-2 col-lg-2">
+    </div>
+
+    <div class="col-10 col-md-8 col-lg-8">
+
+        <div id="divLivro" class="bg-black text-light m-lg-5 p-5">
+
+            <h1 class="text-center mb-3">Cadastro de Livros</h1>
+
+            <form asp-action="Create" enctype="multipart/form-data" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row gap-3 mb-3">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="Titulo" class="control-label"></label>
+                            <input asp-for="Titulo" class="form-control" />
+                            <span asp-validation-for="Titulo" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row gap-3 mb-3">
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="Autor" class="control-label"></label>
+                            <input asp-for="Autor" class="form-control" />
+                            <span asp-validation-for="Autor" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="Editora" class="control-label"></label>
+                            <input asp-for="Editora" class="form-control" />
+                            <span asp-validation-for="Editora" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gap-3 mb-3">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="Descricao" class="control-label"></label>
+                            <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gap-3 mb-3">
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="DataPublicacao" class="control-label"></label>
+                            <input type="date" asp-for="DataPublicacao" class="form-control" />
+                            <span asp-validation-for="DataPublicacao" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="NumeroPaginas" class="control-label"></label>
+                            <input type="number" step="1" asp-for="NumeroPaginas" class="form-control" />
+                            <span asp-validation-for="NumeroPaginas" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gap-3 mb-3">
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="GeneroId" class="control-label"></label>
+                            <div class="d-flex align-items-center">
+                                <select asp-for="GeneroId" class="form-control" asp-items="ViewBag.GeneroId">
+                                    <option value="">Selecione um gênero</option>
+                                </select>
+                                <!-- Button trigger modal -->
+                                <a class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#cadGenero">
+                                    <i class="bi bi-plus-circle"></i>
+                                </a>
+                            </div>
+                            <span asp-validation-for="GeneroId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="Quantidade" class="control-label"></label>
+                            <input type="number" step="1" asp-for="Quantidade" class="form-control" />
+                            <span asp-validation-for="Quantidade" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="row gap-3 mb-3">
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="ISBN10" class="control-label"></label>
+                            <input asp-for="ISBN10" class="form-control" />
+                            <span asp-validation-for="ISBN10" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md">
+                        <div class="form-group">
+                            <label asp-for="ISBN13" class="control-label"></label>
+                            <input asp-for="ISBN13" class="form-control" />
+                            <span asp-validation-for="ISBN13" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gap-3 mb-3">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="UrlCapa" class="control-label"></label>
+                            <input type="file" asp-for="UrlCapa" name="UrlCapa" class="form-control" accept="image/*" />
+                            <span asp-validation-for="UrlCapa" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row gap-3 mb-3">
+                    <div class="col">
+                        <div class="form-group d-flex justify-content-between pt-4">
+
+                            <button asp-action="Index" class="btn btn-outline-light fs-5"><i class="bi bi-arrow-clockwise"></i> Voltar</button>
+
+                            <button type="submit" id="btnSalvar" class="btn btn-light fs-5">
+                                <i class="bi bi-floppy"></i>  Salvar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="col-1 col-md-2 col-lg-2">
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="cadGenero" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Cadastrar Gênero Litérário</h1>
+                <button type="button" class="btn-close text-bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-dark text-light">
+                <form id="formGeneroModal" action="~/Generos/Create" method="post">
+                    <div class="form-group">
+                        <label for="Nome" class="control-label mb-1">Nome</label>
+                        <input name="Nome" class="form-control p-2" />
+                    </div>
+                    <div class="form-group mt-3 d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-light w-25 p-3" data-bs-dismiss="modal">Fechar</button>
+                        <input type="submit" value="Cadastrar" class="btn btn-light w-25 p-3" />
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // Máscaras
+            $('input[name="ISBN10"]').mask('0-000-00000-0');
+            $('input[name="ISBN13"]').mask('000-0-000-00000-0');
+
+            // Salva os dados do formulário antes do reload
+            $('#formGeneroModal').on('submit', function (e) {
+                e.preventDefault();
+                // Salva todos os campos do formulário principal
+                var formData = {};
+                $('#divLivro :input').each(function () {
+                    if (this.name && (this.type !== 'file')) {
+                        formData[this.name] = $(this).val();
+                    }
+                });
+                localStorage.setItem('livroFormData', JSON.stringify(formData));
+
+                var $form = $(this);
+                $.post($form.attr('action'), $form.serialize())
+                    .done(function () {
+                        $('#cadGenero').modal('hide');
+                        location.reload();
+                    })
+                    .fail(function (xhr) {
+                        $('#cadGenero .modal-body').html($(xhr.responseText).find('.modal-body').html());
+                    });
+            });
+
+            // Restaura os dados do formulário ao carregar a página
+            var savedData = localStorage.getItem('livroFormData');
+            if (savedData) {
+                savedData = JSON.parse(savedData);
+                Object.keys(savedData).forEach(function (key) {
+                    var $field = $('[name="' + key + '"]');
+                    if ($field.length) {
+                        $field.val(savedData[key]);
+                    }
+                });
+                localStorage.removeItem('livroFormData');
+            }
+        });
+    </script>
+}
