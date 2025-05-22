@@ -133,6 +133,7 @@ namespace Biblioteca.Controllers
             }
 
             return View(genero);
+
         }
 
         // POST: Generos/Delete/5

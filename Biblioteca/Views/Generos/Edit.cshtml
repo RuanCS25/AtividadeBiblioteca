@@ -1,34 +1,44 @@
 ﻿@model Biblioteca.Models.Genero
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Gênero";
 }
 
-<h1>Edit</h1>
-
-<h4>Genero</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="GeneroId" />
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-black text-light shadow-lg">
+                <div class="card-header text-center">
+                    <h2 class="mb-0"><i class="bi bi-pencil-square"></i> Editar Gênero</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                        <input type="hidden" asp-for="GeneroId" />
+                        <div class="mb-4">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <label asp-for="Nome" class="control-label mb-0"></label>
+                                <div>
+                                    <a asp-action="Index" class="btn btn-outline-light me-2">
+                                        <i class="bi bi-arrow-clockwise"></i> Voltar
+                                    </a>
+                                    <button type="submit" id="btnSalvar" class="btn btn-light">
+                                        <i class="bi bi-floppy"></i> Salvar
+                                    </button>
+                                </div>
+                            </div>
+                            <input asp-for="Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -92,8 +92,6 @@ namespace Biblioteca.Controllers
             return View("Index", usuarios);
         }
 
-
-
         // GET: Usuarios/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -123,10 +121,47 @@ namespace Biblioteca.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("UsuarioId,NomeCompleto,CPF,Celular,DataNascimento,UrlFoto,AppUserId")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("UsuarioId,NomeCompleto,CPF,Celular,DataNascimento,UrlFoto,AppUserId")] Usuario usuario, IFormFile UrlFoto)
         {
             if (ModelState.IsValid)
             {
+                if (UrlFoto != null && UrlFoto.Length > 0)
+                {
+                    // Definir o caminho para salvar a imagem
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "Photos");
+
+                    // Extrai a extensão do arquivo enviado (ex: .jpg, .png)
+                    var fileExtension = Path.GetExtension(UrlFoto.FileName);
+
+                    // Usa apenas o ID do livro + extensão
+                    var uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+
+                    // Se já existir, adiciona um GUID ao nome
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        uniqueFileName = $"{Guid.NewGuid()}_{fileExtension}";
+                        filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    }
+
+                    // Criar a pasta se não existir
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    // Salvar o arquivo no diretório
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await UrlFoto.CopyToAsync(fileStream);
+                    }
+
+                    // Atualizar o campo UrlCapa com o caminho relativo
+                    usuario.UrlFoto = Path.Combine("Resources", "Photos", uniqueFileName).Replace("\\", "/");
+                }
+
+
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (userId == null)
                     return NotFound();
@@ -291,5 +326,23 @@ namespace Biblioteca.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult BuscarFoto(int id)
+        {
+            var usuario = _context.Usuarios.Find(id);
+            if (usuario == null || string.IsNullOrEmpty(usuario.UrlFoto))
+                return NotFound();
+
+            // Monta o caminho físico absoluto a partir do diretório base do projeto
+            var caminho = Path.Combine(Directory.GetCurrentDirectory(), usuario.UrlFoto.Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+            if (!System.IO.File.Exists(caminho))
+                return NotFound();
+
+            var contentType = "image/*"; // Ajuste se necessário para outros formatos
+            return PhysicalFile(caminho, contentType);
+        }
+
+
     }
 }
