@@ -330,9 +330,20 @@ namespace Biblioteca.Controllers
 
             return PartialView("_UltimosLancamentos", livros);
         }
+        public IActionResult DetalhesModal(int id)
+        {
+            var livro = _context.Livros
+                .Include(l => l.Genero)
+                .FirstOrDefault(l => l.LivroId == id);
 
+            if (livro == null)
+                return NotFound();
+
+            return PartialView("_DetalhesLivroModal", livro);
+        }
 
 
 
     }
+
 }

@@ -1,0 +1,20 @@
+﻿@model Biblioteca.Models.Livro
+
+<div class="row">
+    <div class="col-md-4 text-center">
+        <img src="@(string.IsNullOrEmpty(Model.UrlCapa) ? Url.Content("~/img/sem-imagem.jpg") : Url.Action("BuscarCapa", "Livros", new { id = Model.LivroId }))"
+             alt="Capa do Livro" class="img-fluid rounded shadow" style="max-height: 200px; object-fit: cover;" />
+    </div>
+    <div class="col-md-8">
+        <h4>@Model.Titulo</h4>
+        <p><strong>Autor(a):</strong> @Model.Autor</p>
+        <p><strong>Descrição:</strong> @Model.Descricao</p>
+        <p><strong>Editora:</strong> @Model.Editora</p>
+        <p><strong>Data de Publicação:</strong> @Model.DataPublicacao.ToString("dd/MM/yyyy")</p>
+        <p><strong>Número de Páginas:</strong> @Model.NumeroPaginas</p>
+        <p><strong>Quantidade:</strong> @Model.Quantidade</p>
+        <p><strong>ISBN-10:</strong> @Model.ISBN10</p>
+        <p><strong>ISBN-13:</strong> @Model.ISBN13</p>
+        <p><strong>Gênero:</strong> @Model.Genero?.Nome</p>
+    </div>
+</div>

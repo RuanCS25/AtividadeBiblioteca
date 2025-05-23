@@ -15,47 +15,32 @@
 
 <div id="divLancamentos">
     <div class="parallax pt-4 d-flex justify-content-evenly flex-wrap">
-        @foreach (var livro in Model)
-        {
-            <div class="card text-center mt-2 mb-3" style="width: 16rem;">
-                <div class="w-100 text-center mt-3">
-                    <img src="@(string.IsNullOrEmpty(livro.UrlCapa) ? Url.Content("~/img/sem-imagem.jpg") : Url.Action("BuscarCapa", "Livros", new { id = livro.LivroId }))"
-                         class="card-img-top img-fluid"
-                         alt="Capa do Livro" style="height: 200px; object-fit: cover;" />
-                </div>
-                <div class="card-body">
-                    <h4 class="card-title">@livro.Titulo</h4>
-                    <h5 class="lead">@livro.Autor</h5>
-                    <p class="mb-1"><span class="badge bg-secondary">@livro.Genero?.Nome</span></p>
-                    <p class="text-center">
-                        <form asp-controller="Reservas" asp-action="Create" method="post" class="d-inline">
-                            <input type="hidden" name="LivroId" value="@livro.LivroId" />
-                            <button type="submit" class="btn btn-dark p-3 m-0">
-                                Reservar
-                            </button>
-                        </form>
-                    </p>
-                </div>
-            </div>
-        }
-    </div>
-</div>
-
-
-
-<div class="m-0 p-0">
-    <h2 class="text-center text-light bg-dark m-0 pt-4">TOP 5 - Livros Mais Reservados</h2>
-    <div id="divTop5" class="bg-dark m-0 pt-4 d-flex justify-content-evenly flex-wrap">
-        @if (ViewBag.LivrosMaisReservados != null)
-        {
-            foreach (var livro in (IEnumerable<Biblioteca.Models.Livro>)ViewBag.LivrosMaisReservados)
+        <div class="parallax pt-4 d-flex justify-content-evenly flex-wrap">
+            @foreach (var livro in Model)
             {
                 <div class="card text-center mt-2 mb-3" style="width: 16rem;">
                     <div class="w-100 text-center mt-3">
-                        <img src="@(string.IsNullOrEmpty(livro.UrlCapa) ? Url.Content("~/img/sem-imagem.jpg") : Url.Action("BuscarCapa", "Livros", new { id = livro.LivroId }))"
-                             class="card-img-top img-fluid"
-                             alt="Capa do Livro" style="height: 200px; object-fit: cover;" />
+                        <button type="button"
+                                class="p-0 border-0 bg-transparent"
+                                style="width:100%"
+                                data-bs-toggle="modal"
+                                data-bs-target="#avaliacoesModal"
+                                data-livro-id="@livro.LivroId">
+                            <img src="@(string.IsNullOrEmpty(livro.UrlCapa) ? Url.Content("~/img/sem-imagem.jpg") : Url.Action("BuscarCapa", "Livros", new { id = livro.LivroId }))"
+                                 class="card-img-top img-fluid"
+                                 alt="Capa do Livro" style="height: 200px; object-fit: cover;" />
+                        </button>
+
+                        <button type="button"
+                                class="btn btn-outline-secondary mt-2 w-75"
+                                data-bs-toggle="modal"
+                                data-bs-target="#avaliacoesModal"
+                                data-livro-id="@livro.LivroId">
+                            Avaliações
+                        </button>
                     </div>
+
+
                     <div class="card-body">
                         <h4 class="card-title">@livro.Titulo</h4>
                         <h5 class="lead">@livro.Autor</h5>
@@ -71,81 +56,157 @@
                     </div>
                 </div>
             }
-        }
-        else
-        {
-            <span class="text-light">Nenhum livro reservado ainda.</span>
-        }
+        </div>
     </div>
-</div>
 
-<!--
-<div id="divAvalicao">
 
-    <div class="parallax pt-4 pb-5 ">
-        <h2 class="text-center text-black bg-transparent m-0 pt-2 text-shadow-white">Livros com Melhores Avaliações</h2>
 
-        <div class="pt-3 d-flex justify-content-evenly">
-            <div class="card text-center mt-2">
-                <div class="w-100 text-center mt-3">
-                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
-                </div>
-                <div class="card-body">
-                    <h4 class="card-title">A Fazenda SFantasma</h4>
-                    <h5 class="lead">Gustavo F. Francelin</h5>
-                    <p>Avaliações</p>
-                    <p class="text-center">
-                        <a href="#" class="card-link btn btn-dark">Reservar</a>
-                    </p>
-                </div>
-            </div>
+    <div class="m-0 p-0">
+        <h2 class="text-center text-light bg-dark m-0 pt-4">TOP 5 - Livros Mais Reservados</h2>
+        <div id="divTop5" class="bg-dark m-0 pt-4 d-flex justify-content-evenly flex-wrap">
+            @if (ViewBag.LivrosMaisReservados != null)
+            {
+                foreach (var livro in (IEnumerable<Biblioteca.Models.Livro>)ViewBag.LivrosMaisReservados)
+                {
+                    <div class="card text-center mt-2 mb-3" style="width: 16rem;">
+                        <div class="w-100 text-center mt-3">
+                            <img src="@(string.IsNullOrEmpty(livro.UrlCapa) ? Url.Content("~/img/sem-imagem.jpg") : Url.Action("BuscarCapa", "Livros", new { id = livro.LivroId }))"
+                                 class="card-img-top img-fluid"
+                                 alt="Capa do Livro" style="height: 200px; object-fit: cover;" />
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">@livro.Titulo</h4>
+                            <h5 class="lead">@livro.Autor</h5>
+                            <p class="mb-1"><span class="badge bg-secondary">@livro.Genero?.Nome</span></p>
+                            <p class="text-center">
+                                <form asp-controller="Reservas" asp-action="Create" method="post" class="d-inline">
+                                    <input type="hidden" name="LivroId" value="@livro.LivroId" />
+                                    <button type="submit" class="btn btn-dark p-3 m-0">
+                                        Reservar
+                                    </button>
+                                </form>
+                            </p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <span class="text-light">Nenhum livro reservado ainda.</span>
+            }
+        </div>
+    </div>
 
-            <div class="card text-center mt-2">
-                <div class="w-100 text-center mt-3">
-                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
-                </div>
-                <div class="card-body">
-                    <h4 class="card-title">A Fazenda SFantasma</h4>
-                    <h5 class="lead">Gustavo F. Francelin</h5>
-                    <p>Avaliações</p>
-                    <p class="text-center">
-                        <a href="#" class="card-link btn btn-dark">Reservar</a>
-                    </p>
-                </div>
-            </div>
+    <!--
+    <div id="divAvalicao">
 
-            <div class="card text-center mt-2">
-                <div class="w-100 text-center mt-3">
-                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
-                </div>
-                <div class="card-body">
-                    <h4 class="card-title">A Fazenda SFantasma</h4>
-                    <h5 class="lead">Gustavo F. Francelin</h5>
-                    <p>Avaliações</p>
-                    <p class="text-center">
-                        <a href="#" class="card-link btn btn-dark">Reservar</a>
-                    </p>
-                </div>
-            </div>
+        <div class="parallax pt-4 pb-5 ">
+            <h2 class="text-center text-black bg-transparent m-0 pt-2 text-shadow-white">Livros com Melhores Avaliações</h2>
 
-            <div class="card text-center mt-2">
-                <div class="w-100 text-center mt-3">
-                    <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+            <div class="pt-3 d-flex justify-content-evenly">
+                <div class="card text-center mt-2">
+                    <div class="w-100 text-center mt-3">
+                        <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">A Fazenda SFantasma</h4>
+                        <h5 class="lead">Gustavo F. Francelin</h5>
+                        <p>Avaliações</p>
+                        <p class="text-center">
+                            <a href="#" class="card-link btn btn-dark">Reservar</a>
+                        </p>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h4 class="card-title">A Fazenda SFantasma</h4>
-                    <h5 class="lead">Gustavo F. Francelin</h5>
-                    <p>Avaliações</p>
-                    <p class="text-center">
-                        <a href="#" class="card-link btn btn-dark">Reservar</a>
-                    </p>
+
+                <div class="card text-center mt-2">
+                    <div class="w-100 text-center mt-3">
+                        <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">A Fazenda SFantasma</h4>
+                        <h5 class="lead">Gustavo F. Francelin</h5>
+                        <p>Avaliações</p>
+                        <p class="text-center">
+                            <a href="#" class="card-link btn btn-dark">Reservar</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card text-center mt-2">
+                    <div class="w-100 text-center mt-3">
+                        <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">A Fazenda SFantasma</h4>
+                        <h5 class="lead">Gustavo F. Francelin</h5>
+                        <p>Avaliações</p>
+                        <p class="text-center">
+                            <a href="#" class="card-link btn btn-dark">Reservar</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card text-center mt-2">
+                    <div class="w-100 text-center mt-3">
+                        <img src="~/img/livro.png" class="card-img-top img-fluid" alt="Capa do Livro">
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">A Fazenda SFantasma</h4>
+                        <h5 class="lead">Gustavo F. Francelin</h5>
+                        <p>Avaliações</p>
+                        <p class="text-center">
+                            <a href="#" class="card-link btn btn-dark">Reservar</a>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
--->
+    -->
+    <!-- Modal de Avaliações -->
+    <div class="modal fade" id="avaliacoesModal" tabindex="-1" aria-labelledby="avaliacoesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="avaliacoesModalLabel">Detalhes do Livro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body" id="avaliacoesModalBody">
+                    <div class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    -->
+    @section Scripts {
+        <script>
+            var avaliacoesModal = document.getElementById('avaliacoesModal');
+            if (avaliacoesModal) {
+                avaliacoesModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var livroId = button.getAttribute('data-livro-id');
+                    var modalBody = document.getElementById('avaliacoesModalBody');
+                    modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
 
-<div id="divFooter" class="bg-dark text-center p-3">
-    <p class="lead text-light pt-3">Desenvolvido com 🤍 por Prof. Cristiano de Paula</p>
-</div>
+                    fetch('/Livros/DetalhesModal/' + livroId)
+                        .then(response => response.text())
+                        .then(html => {
+                            modalBody.innerHTML = html;
+                        })
+                        .catch(() => {
+                            modalBody.innerHTML = '<div class="alert alert-danger">Erro ao carregar detalhes do livro.</div>';
+                        });
+                });
+            }
+        </script>
+    }
+
+
+
+    <div id="divFooter" class="bg-dark text-center p-3">
+        <p class="lead text-light pt-3">Desenvolvido com 🤍 por Prof. Cristiano de Paula</p>
+    </div>

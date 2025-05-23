@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 
 namespace Biblioteca.Models
@@ -49,5 +50,7 @@ namespace Biblioteca.Models
         [Required(ErrorMessage = "O Gênero Literário é obrigatório.")]
         public int GeneroId { get; set; }
         public Genero? Genero { get; set; }
+
     }
 }
+
