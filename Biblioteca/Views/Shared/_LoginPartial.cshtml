@@ -12,7 +12,7 @@
     var usuario = DbContext.Usuarios
         .FirstOrDefault(u => u.AppUserId.ToString() == userId);
 
-    <div class="usuario-nome d-flex align-items-center">
+    <div class="usuario-nome d-none d-lg-flex align-items-center">
         <a class="text-light nav-link me-4"
            asp-controller="Usuarios"
            asp-action="Edit"

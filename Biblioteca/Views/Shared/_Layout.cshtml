@@ -1,4 +1,10 @@
 ﻿<!DOCTYPE html>
+@using Biblioteca.Data
+@inject ApplicationDbContext DbContext
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 @{
     var isAdmin = User.Identity.IsAuthenticated && User.IsInRole("Admin");
 }
@@ -80,6 +86,25 @@
                             <i class="bi bi-person-check"></i> Cadastro de Usuários
                         </a>
                     </li>
+
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        var userId = UserManager.GetUserId(User);
+                        var usuario = DbContext.Usuarios.FirstOrDefault(u => u.AppUserId.ToString() == userId);
+
+                        <div class="d-block d-lg-none mt-4 text-center border-top pt-3">
+                            <a asp-controller="Usuarios"
+                               asp-action="Edit"
+                               asp-route-id="@(usuario?.UsuarioId ?? 0)"
+                               class="text-decoration-none text-light">
+
+                                <div class="fw-bold mt-1">@usuario?.NomeCompleto</div>
+                            </a>
+                            <form class="mt-2" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                <button type="submit" class="btn btn-outline-light btn-sm">Sair</button>
+                            </form>
+                        </div>
+                    }
                 }
             </ul>
             <hr />
