@@ -7,7 +7,7 @@
 <div id="divUsuario" class="container bg-black text-light mt-5 fs-5">
     <h4 class="text-center fs-3">Complete Seu Cadastro</h4>
     <hr />
-    <form asp-action="Create">
+    <form asp-action="Create" enctype="multipart/form-data" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="row gap-3 mb-3 mt-2">
             <div class="col">
