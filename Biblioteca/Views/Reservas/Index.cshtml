@@ -4,52 +4,100 @@
     string searchTerm = ViewBag.SearchTerm as string ?? "";
 }
 
-<div class="row">
-    <div class="col-1 col-md-2 col-lg-2"></div>
-    <div id="divMinhasRetiradas" class="col-10 col-md-8 col-lg-8 bg-black text-light m-lg-5 mb-3 p-5">
-        <h1 class="text-center mb-5">Minhas Reservas</h1>
-
-        <div id="divLocalizarReserva" class="mb-4">
-            <form asp-action="Index" method="get" class="mb-3">
-                <div class="input-group">
-                    <input type="text" name="searchTerm" class="form-control" placeholder="Localizar reserva..." value="@searchTerm" />
-                    <button type="submit" class="btn btn-outline-light">
-                        <i class="bi bi-search"></i> Localizar
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <table class="table table-dark table-striped mt-3">
-            <thead>
+<table class="table table-dark table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Data Reserva</th>
+            <th>Livro</th>
+            <th>Status</th>
+            <th>Avaliação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
                 <tr>
-                    <th>Data Reserva</th>
-                    <th>Livro</th>
-                    <th>Status</th>
+
+                    <td>@item.DataReserva.ToString("dd/MM/yyyy")</td>
+                    <td>@item.Livro?.Titulo</td>
+                    <td>
+                        @(item.Cancelada ? "Cancelada" : (item.LivroRetirado ? "Retirado" : "Pendente"))
+                    </td>
+                    <td>
+                        @if (item.LivroRetirado && !item.Cancelada)
+                        {
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#avaliarModal-@item.ReservaId">
+                                Avaliar
+                            </button>
+
+                            <!-- Modal de Avaliação -->
+                            <div class="modal fade" id="avaliarModal-@item.ReservaId" tabindex="-1" aria-labelledby="avaliarModalLabel-@item.ReservaId" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content bg-dark text-light">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="avaliarModalLabel-@item.ReservaId">Avaliar Livro</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                                        </div>
+                                        <form asp-controller="Avaliacoes" asp-action="Create" method="post">
+                                            <div class="modal-body">
+                                                <input type="hidden" name="LivroId" value="@item.LivroId" />
+                                                <div class="mb-3 text-center">
+                                                    <span class="fs-4">Nota:</span>
+                                                    <div class="star-rating" data-input-id="notaInput-@item.ReservaId">
+                                                        @for (int i = 1; i <= 5; i++)
+                                                        {
+                                                            <i class="bi bi-star" data-value="@i" style="font-size: 2rem; cursor:pointer;"></i>
+                                                        }
+                                                    </div>
+                                                    <input type="hidden" id="notaInput-@item.ReservaId" name="Nota" value="0" required />
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="comentario-@item.ReservaId" class="form-label">Comentário (opcional):</label>
+                                                    <textarea class="form-control" id="comentario-@item.ReservaId" name="Comentario" rows="2"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-success">Enviar Avaliação</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @if (Model != null && Model.Any())
-                {
-                    foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.DataReserva.ToString("dd/MM/yyyy")</td>
-                            <td>@item.Livro?.Titulo</td>
-                            <td>
-                                @(item.Cancelada ? "Cancelada" : (item.LivroRetirado ? "Retirada" : "Pendente"))
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="3" class="text-center">Nenhuma reserva encontrada.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="col-1 col-md-2 col-lg-2"></div>
-</div>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">Nenhuma reserva encontrada.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.star-rating').forEach(function (container) {
+            const inputId = container.getAttribute('data-input-id');
+            const input = document.getElementById(inputId);
+            const stars = container.querySelectorAll('.bi-star');
+            stars.forEach(function (star, idx) {
+                star.addEventListener('click', function () {
+                    input.value = idx + 1;
+                    stars.forEach((s, i) => {
+                        s.classList.toggle('bi-star-fill', i <= idx);
+                        s.classList.toggle('bi-star', i > idx);
+                    });
+                });
+            });
+        });
+    </script>
+}

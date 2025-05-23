@@ -9,18 +9,16 @@
 @if (SignInManager.IsSignedIn(User))
 {
     var userId = UserManager.GetUserId(User);
-    var usuarioId = DbContext.Usuarios
-        .Where(u => u.AppUserId.ToString() == userId)
-        .Select(u => u.UsuarioId)
-        .FirstOrDefault();
+    var usuario = DbContext.Usuarios
+        .FirstOrDefault(u => u.AppUserId.ToString() == userId);
 
-    <div class="d-flex align-items-center">
+    <div class="usuario-nome d-flex align-items-center">
         <a class="text-light nav-link me-4"
            asp-controller="Usuarios"
            asp-action="Edit"
-           asp-route-id="@usuarioId"
+           asp-route-id="@(usuario?.UsuarioId ?? 0)"
            title="Manage">
-            Olá @User.Identity?.Name!
+            Olá @(usuario?.NomeCompleto ?? "Usuário")!
         </a>
         <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
             <button type="submit" class="btn btn-outline-light me-4 fs-5">Sair</button>

@@ -47,30 +47,38 @@ namespace Biblioteca.Controllers
         }
 
         // GET: Avaliacoes/Create
-        public IActionResult Create()
-        {
-            ViewData["LivroId"] = new SelectList(_context.Livros, "LivroId", "LivroId");
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId");
-            return View();
-        }
+
 
         // POST: Avaliacoes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AvaliacaoId,Nota,Comentario,DataAvaliacao,LivroId,UsuarioId")] Avaliacao avaliacao)
+        public async Task<IActionResult> Create(int LivroId, int Nota, string? Comentario)
         {
-            if (ModelState.IsValid)
+            var userName = User.Identity?.Name;
+            var usuario = await _context.Usuarios
+                .FirstOrDefaultAsync(u => u.IdentityUser != null && u.IdentityUser.UserName == userName);
+
+            if (usuario == null || Nota < 1 || Nota > 5)
+                return Unauthorized();
+
+            var avaliacao = new Avaliacao
             {
-                _context.Add(avaliacao);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["LivroId"] = new SelectList(_context.Livros, "LivroId", "LivroId", avaliacao.LivroId);
-            ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", avaliacao.UsuarioId);
-            return View(avaliacao);
+                LivroId = LivroId,
+                UsuarioId = usuario.UsuarioId,
+                Nota = Nota,
+                Comentario = Comentario,
+                DataAvaliacao = DateTime.Now
+            };
+
+            _context.Avaliacoes.Add(avaliacao);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Avaliação registrada com sucesso!";
+            return RedirectToAction("Index", "Reservas");
         }
+
 
         // GET: Avaliacoes/Edit/5
         public async Task<IActionResult> Edit(int? id)

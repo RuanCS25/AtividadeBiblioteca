@@ -8,6 +8,12 @@ html {
     }
 }
 
+@media (max-width: 991.98px) {
+    .usuario-nome {
+        display: none !important;
+    }
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
@@ -59,19 +65,34 @@ header {
     height: 520px;
 }
 
-    #divLancamentos .card, #divTop5 .card, #divAvalicao .card {
-        margin: 0 32px 0 32px;
-        width: 18rem;
-        text-align: center;
-        box-shadow: rgba(0,0,0,.4) 10px 10px;
-        height: 400px;
-        max-height: 400px;
+@media (max-width: 767.98px) {
+    #divLancamentos, #divTop5, #divAvalicao {
+        height: auto;
+        max-height: none;
+        padding-bottom: 2rem;
     }
 
-        #divLancamentos .card img, #divTop5 .card img, #divAvalicao .card img {
-            height: 200px;
-            width: 150px;
+        #divLancamentos .card, #divTop5 .card, #divAvalicao .card {
+            margin: 0 auto 1.5rem auto;
+            width: 100%;
+            min-width: 0;
+            max-width: 20rem;
+            height: auto;
+            max-height: none;
         }
+
+            #divLancamentos .card img, #divTop5 .card img, #divAvalicao .card img {
+                width: 100%;
+                max-width: 200px;
+                height: auto;
+                margin: 0 auto;
+            }
+
+    .form-busca {
+        width: 100%;
+    }
+}
+
 
 
 .text-shadow-white {
@@ -141,6 +162,7 @@ header {
     box-shadow: rgba(0,0,0,.4) 12px 12px;
 }
 
+
     #divLivro button {
         width: 250px;
         padding: 16px;
@@ -177,6 +199,7 @@ header {
     #listaLivros input {
         font-size: 16px;
         padding: 12px;
+        padding-bottom: 1rem;
     }
 
     #listaLivros a {
