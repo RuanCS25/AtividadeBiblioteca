@@ -23,7 +23,7 @@ body {
 }
 
 .parallax {
-    background-image: url('../img/biblioteca.jpeg');
+    background-image: url('../img/bibliotecas.png');
     height: 550px;
     max-height: 550px;
     background-attachment: fixed;
