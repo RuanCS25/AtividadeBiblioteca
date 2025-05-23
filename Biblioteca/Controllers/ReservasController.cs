@@ -49,7 +49,7 @@ namespace Biblioteca.Controllers
             var reservasQuery = _context.Reservas
                 .Include(r => r.Livro)
                 .Include(r => r.Usuario)
-                .Where(r => r.Usuario.AppUserId.ToString() == userId);
+                .Where(r => r.Usuario.AppUserId.ToString() == userId && !r.Cancelada); // <-- filtro adicionado
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -67,6 +67,7 @@ namespace Biblioteca.Controllers
             ViewBag.SearchTerm = searchTerm;
             return View(reservas);
         }
+
 
         // GET: Reservas/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -102,10 +103,10 @@ namespace Biblioteca.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-     int LivroId,
-     string? searchTerm,
-     string? sortOrder,
-     int page = 1)
+         int LivroId,
+         string? searchTerm,
+         string? sortOrder,
+         int page = 1)
         {
             // Obtém o usuário logado (Identity)
             var userName = User.Identity?.Name;
@@ -244,8 +245,22 @@ namespace Biblioteca.Controllers
             {
                 try
                 {
-                    _context.Update(reserva);
+                    // Carrega a reserva original do banco
+                    var reservaOriginal = await _context.Reservas.FindAsync(id);
+                    if (reservaOriginal == null)
+                    {
+                        return NotFound();
+                    }
+
+                    // Atualiza apenas os campos editáveis
+                    reservaOriginal.DataReserva = reserva.DataReserva;
+                    reservaOriginal.UsuarioId = reserva.UsuarioId;
+                    reservaOriginal.LivroId = reserva.LivroId;
+                    reservaOriginal.LivroRetirado = reserva.LivroRetirado;
+                    reservaOriginal.Cancelada = reserva.Cancelada;
+
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -258,7 +273,6 @@ namespace Biblioteca.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["LivroId"] = new SelectList(_context.Livros, "LivroId", "LivroId", reserva.LivroId);
             ViewData["UsuarioId"] = new SelectList(_context.Usuarios, "UsuarioId", "UsuarioId", reserva.UsuarioId);
@@ -286,23 +300,28 @@ namespace Biblioteca.Controllers
         }
 
         // POST: Reservas/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Cancelar(int id)
         {
             var reserva = await _context.Reservas.FindAsync(id);
-            if (reserva != null)
+            if (reserva == null)
+                return Json(new { success = false, message = "Reserva não encontrada." });
+
+            if (!reserva.Cancelada && !reserva.LivroRetirado)
             {
-                _context.Reservas.Remove(reserva);
+                reserva.Cancelada = true;
+                var livro = await _context.Livros.FindAsync(reserva.LivroId);
+                if (livro != null)
+                {
+                    livro.Quantidade += 1;
+                    _context.Update(livro);
+                }
+                _context.Update(reserva);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ReservaExists(int id)
-        {
-            return _context.Reservas.Any(e => e.ReservaId == id);
+            return Json(new { success = true });
         }
 
         [AllowAnonymous]
@@ -326,8 +345,10 @@ namespace Biblioteca.Controllers
             return livros;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Cancelar(int id)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cancelar2(int id)
         {
             var reserva = await _context.Reservas.FindAsync(id);
             if (reserva == null)
@@ -335,19 +356,31 @@ namespace Biblioteca.Controllers
                 return NotFound();
             }
 
-            // Procurar o livro associado à reserva
-            var livro = await _context.Livros.FindAsync(reserva.LivroId);
+            // Só permite cancelar se não estiver cancelada ou retirada
+            if (!reserva.Cancelada && !reserva.LivroRetirado)
+            {
+                reserva.Cancelada = true;
 
-            livro.Quantidade += 1; // Aumenta a quantidade do livro
+                // Devolve a quantidade do livro
+                var livro = await _context.Livros.FindAsync(reserva.LivroId);
+                if (livro != null)
+                {
+                    livro.Quantidade += 1;
+                    _context.Update(livro);
+                }
 
-            reserva.Cancelada = true;
-            _context.Update(reserva);
-            await _context.SaveChangesAsync();
+                _context.Update(reserva);
+                await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Reserva Cancelada com Sucesso!";
+                TempData["SuccessMessage"] = "Reserva cancelada com sucesso!";
+            }
 
-            // Redireciona para a action Retiradas do MovimentacoesController
-            return RedirectToAction("Retiradas", "Movimentacoes");
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ReservaExists(int id)
+        {
+            return _context.Reservas.Any(e => e.ReservaId == id);
         }
     }
 }
